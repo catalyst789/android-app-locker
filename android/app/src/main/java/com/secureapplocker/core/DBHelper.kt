@@ -1,10 +1,17 @@
 package com.secureapplocker.core
 
+import android.content.ContentValues
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.facebook.react.bridge.ReactApplicationContext
 
 class DBHelper(private val tableName: String, context: ReactApplicationContext) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+    companion object {
+        private const val DATABASE_NAME = "secured-app-locker.db"
+        private const val DATABASE_VERSION = 1
+    }
 
     override fun onCreate(db: SQLiteDatabase) {
         // Create your tables here
@@ -16,9 +23,22 @@ class DBHelper(private val tableName: String, context: ReactApplicationContext) 
         onCreate(db)
     }
 
-    companion object {
-        private const val DATABASE_NAME = "secured-app-locker.db"
-        private const val DATABASE_VERSION = 1
+    fun insertData(name: String, packageName: String): Long {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put("name", name)
+        contentValues.put("packageName", packageName)
+        return db.insert(tableName, null, contentValues)
+    }
+
+    fun deleteData(packageName: String): Int {
+        val db = this.writableDatabase
+        return db.delete(tableName, "packageName = ?", arrayOf(packageName))
+    }
+
+    fun getData(packageName: String): Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM $tableName WHERE packageName = ?", arrayOf(packageName))
     }
 
 }
