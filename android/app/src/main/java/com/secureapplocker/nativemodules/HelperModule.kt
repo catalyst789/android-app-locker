@@ -86,4 +86,5 @@ class HelperModule(rContext: ReactApplicationContext): ReactContextBaseJavaModul
             }
         }
     }
+
 }
