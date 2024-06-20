@@ -1,21 +1,23 @@
 package com.secureapplocker.core
 
 import android.content.ContentValues
+import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.facebook.react.bridge.ReactApplicationContext
 
-class DBHelper(private val tableName: String, context: ReactApplicationContext) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DBHelper(private val tableName: String, context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "secured-app-locker.db"
         private const val DATABASE_VERSION = 1
+        private const val COLUMN_ID = "_id"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
         // Create your tables here
-        db.execSQL("CREATE TABLE IF NOT EXISTS $tableName (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, value TEXT)")
+        db.execSQL("CREATE TABLE $tableName ($COLUMN_ID INTEGER PRIMARY KEY, \"name\" TEXT, \"value\" TEXT, \"packageName\" TEXT)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {

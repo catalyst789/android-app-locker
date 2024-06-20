@@ -15,20 +15,26 @@ export const useAppsHook = () => {
     console.log('hithtihtihtithithithith');
     const appIndexToBeLocked = appsList.findIndex(
       a => a.packageName === packageName,
-    );
-    if (appIndexToBeLocked !== -1) {
-      const newAppList = [...appsList];
-      const appToBeLocked = newAppList[appIndexToBeLocked];
-      newAppList[appIndexToBeLocked] = {
-        ...appToBeLocked,
-        locked: true,
+      );
+      if (appIndexToBeLocked !== -1) {
+        const newAppList = [...appsList];
+        const appToBeLocked = newAppList[appIndexToBeLocked];
+        newAppList[appIndexToBeLocked] = {
+          ...appToBeLocked,
+          locked: true,
       };
       setAppsList(newAppList);
-      await AsyncStorage.setItem(
-        AsyncKeys.INSTALLED_APPS,
-        JSON.stringify(newAppList),
-      );
-      console.log('locked');
+      try {
+        await NativeModules.DBModule.lockApp(appToBeLocked.appName, appToBeLocked.packageName);
+        await AsyncStorage.setItem(
+          AsyncKeys.INSTALLED_APPS,
+          JSON.stringify(newAppList),
+        );
+        console.log('locked');
+      } catch (error) {
+        console.log(error);
+      }
+
     }
   };
 
@@ -46,11 +52,17 @@ export const useAppsHook = () => {
         locked: false,
       };
       setAppsList(newAppList);
-      await AsyncStorage.setItem(
-        AsyncKeys.INSTALLED_APPS,
-        JSON.stringify(newAppList),
-      );
-      console.log('unlocked');
+      try {
+        await NativeModules.DBModule.unlockApp(appToBeLocked.packageName);
+        await AsyncStorage.setItem(
+          AsyncKeys.INSTALLED_APPS,
+          JSON.stringify(newAppList),
+        );
+        console.log('unlocked');        
+      } catch (error) {
+        console.log(error);
+      }
+
     }
   };
 

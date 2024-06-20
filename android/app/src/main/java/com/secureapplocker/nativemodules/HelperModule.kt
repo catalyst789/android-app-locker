@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.google.gson.Gson
 import com.secureapplocker.MainActivity
 import com.secureapplocker.core.AppListFetcher
+import com.secureapplocker.core.Holds
 import com.secureapplocker.core.REQ_CODE_DRAW_OVER_APPS_PERM_INTENT
 import com.secureapplocker.core.REQ_CODE_USAGE_PERM_INTENT
 import com.secureapplocker.core.permissionsHelper.PermissionManager
@@ -85,6 +86,17 @@ class HelperModule(rContext: ReactApplicationContext): ReactContextBaseJavaModul
                     REQ_CODE_USAGE_PERM_INTENT)
             }
         }
+    }
+
+    @ReactMethod
+    fun isShowLockScreenIntent(promise: Promise){
+        promise.resolve(Holds.showLockScreenIntent)
+    }
+
+    @ReactMethod
+    fun cSetter(promise: Promise){
+        Holds.reactApplicationContext = reactApplicationContext
+        promise.resolve("success")
     }
 
 }
